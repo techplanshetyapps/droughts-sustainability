@@ -9,12 +9,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Fixed Pool configuration to properly handle self-signed SSL certificates
+const { Pool } = require('pg');
+
 const pool = new Pool({
-    connectionString: "postgres://avnadmin:YOUR_ACTUAL_PASSWORD@pg-1aa2540d-govsim.g.aivencloud.com:20568/defaultdb?sslmode=require",
-    ssl: {
-        rejectUnauthorized: false
-    }
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
 });
 
 const initialData = [
