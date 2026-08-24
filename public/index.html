@@ -6,51 +6,59 @@
     <title>Drought Monitoring & AI Prediction Dashboard</title>
     <style>
         :root {
-            --primary: #1b4d3e;
-            --primary-hover: #14382c;
+            --primary: #4e9f3d;
+            --primary-hover: #3d7d30;
             --accent: #2d6a4f;
-            --accent-light: #d8f3dc;
-            --bg-color: #f0f4f3;
-            --card-bg: #ffffff;
-            --text-main: #2b2d42;
-            --text-muted: #6c757d;
-            --border-color: #d1d7d5;
+            --accent-light: rgba(216, 243, 220, 0.2);
+            --card-bg: oklch(28.6% 0.066 53.813 / 0.66);
+            --text-main: #f8faf9;
+            --text-muted: #cbd5e1;
+            --border-color: rgba(255, 255, 255, 0.15);
         }
 
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
-            background: var(--bg-color); 
+            background-image: url('terrapredict-background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             color: var(--text-main); 
+            min-height: 100vh;
         }
 
         .container { 
             max-width: 1000px; 
             margin: 40px auto; 
             background: var(--card-bg); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             padding: 35px; 
             border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(27, 77, 62, 0.08); 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); 
+            border: 1px solid var(--border-color);
         }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--accent-light);
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 15px;
             margin-bottom: 25px;
         }
 
-        h2 { color: var(--primary); margin: 0; font-size: 1.8rem; }
+        h2 { color: #ffffff; margin: 0; font-size: 1.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         
         .metrics-badge {
-            background: var(--accent-light);
-            color: var(--primary);
+            background: rgba(45, 106, 79, 0.8);
+            color: #ffffff;
             padding: 6px 14px;
             border-radius: 20px;
             font-weight: 600;
             font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.2);
         }
 
         form { 
@@ -58,7 +66,7 @@
             grid-template-columns: 2fr 1fr 1fr auto; 
             gap: 15px; 
             margin-bottom: 25px; 
-            background: #f8faf9; 
+            background: rgba(0, 0, 0, 0.25); 
             padding: 22px; 
             border-radius: 12px; 
             border: 1px solid var(--border-color); 
@@ -70,11 +78,11 @@
             font-size: 15px; 
             border: 1px solid var(--border-color); 
             border-radius: 8px; 
-            background: white; 
-            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.9); 
+            color: #2b2d42;
         }
 
-        input[readonly] { background: #e9ecef; color: var(--text-muted); cursor: not-allowed; }
+        input[readonly] { background: rgba(233, 236, 239, 0.9); color: #6c757d; cursor: not-allowed; }
 
         button { 
             background: var(--primary); 
@@ -100,15 +108,17 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #2b2d42;
         }
 
         .loading { 
             display: none; 
-            color: var(--accent); 
+            color: #ffffff; 
             font-weight: 600; 
             margin-bottom: 15px; 
             text-align: center; 
-            background: var(--accent-light);
+            background: rgba(45, 106, 79, 0.8);
             padding: 10px;
             border-radius: 8px;
         }
@@ -118,12 +128,17 @@
             overflow-y: auto; 
             border: 1px solid var(--border-color); 
             border-radius: 10px; 
+            background: rgba(0, 0, 0, 0.2);
         }
 
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #edf2f1; }
-        th { background: #f1f5f4; position: sticky; top: 0; z-index: 1; color: var(--primary); font-weight: 600; }
-        tr:hover { background: #f9fbfb; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.1); color: #f8faf9; }
+        th { background: rgba(0, 0, 0, 0.4); position: sticky; top: 0; z-index: 1; color: #ffffff; font-weight: 600; }
+        
+        /* Slightly different background tints for alternating rows */
+        tr:nth-child(odd) { background: rgba(255, 255, 255, 0.03); }
+        tr:nth-child(even) { background: rgba(255, 255, 255, 0.08); }
+        tr:hover { background: rgba(255, 255, 255, 0.15); }
 
         .tag {
             display: inline-block;
@@ -131,8 +146,8 @@
             border-radius: 6px;
             font-size: 0.85rem;
             font-weight: 500;
-            background: #e2e8f0;
-            color: #475569;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
         }
     </style>
 </head>
@@ -156,7 +171,7 @@
     <div id="loading" class="loading">⏳ Processing analysis and saving record, please wait...</div>
 
     <div class="toolbar">
-        <h3 style="margin: 0; color: var(--text-main);">Recorded Telemetry & AI Insights</h3>
+        <h3 style="margin: 0; color: #f8faf9;">Recorded Telemetry & AI Insights</h3>
         <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search records by town or keyword...">
     </div>
 
