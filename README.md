@@ -20,6 +20,16 @@ An enterprise-grade sustainability application built to monitor regional drought
 
 ---
 
+## Technology Stack & Architecture 
+
+* **Backend:** Node.js, Express.js (JavaScript)
+* **Frontend / UI:** Tailwind CSS, HTML5, CSS3, Responsive Layouts
+* **Database & Cloud PaaS:** Aiven PostgreSQL Database
+* **AI & LLM Orchestration:** Ollama (Llama 3.2)
+* **Deployment & Hosting:** Vercel PaaS
+
+---
+
 ## Features
 
 * **AI-Powered Risk Assessment:** Automatically queries a local Llama 3.2 model to analyze town size, affected area, and duration, generating concise real-time risk predictions.
