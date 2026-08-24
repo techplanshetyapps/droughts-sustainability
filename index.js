@@ -9,8 +9,10 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+const connectionString = process.env.DATABASE_URL ? process.env.DATABASE_URL.split('?')[0] : '';
+
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: connectionString,
     ssl: {
         rejectUnauthorized: false
     }
