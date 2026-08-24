@@ -11,7 +11,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false }
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 const initialData = [
