@@ -5,44 +5,169 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drought Monitoring & AI Prediction Dashboard</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #eef2f3; color: #333; }
-        .container { max-width: 950px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
-        form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; margin-bottom: 25px; background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #e1e1e1; }
-        input, button { padding: 12px; font-size: 15px; border: 1px solid #ccc; border-radius: 6px; }
-        button { background: #27ae60; color: white; border: none; cursor: pointer; font-weight: bold; transition: background 0.2s; }
-        button:hover { background: #219653; }
-        .loading { display: none; color: #2980b9; font-weight: bold; margin-bottom: 15px; text-align: center; }
-        .table-container { max-height: 400px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px; margin-top: 15px; }
+        :root {
+            --primary: #1b4d3e;
+            --primary-hover: #14382c;
+            --accent: #2d6a4f;
+            --accent-light: #d8f3dc;
+            --bg-color: #f0f4f3;
+            --card-bg: #ffffff;
+            --text-main: #2b2d42;
+            --text-muted: #6c757d;
+            --border-color: #d1d7d5;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            background: var(--bg-color); 
+            color: var(--text-main); 
+        }
+
+        .container { 
+            max-width: 1000px; 
+            margin: 40px auto; 
+            background: var(--card-bg); 
+            padding: 35px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(27, 77, 62, 0.08); 
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--accent-light);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        h2 { color: var(--primary); margin: 0; font-size: 1.8rem; }
+        
+        .metrics-badge {
+            background: var(--accent-light);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        form { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr 1fr auto; 
+            gap: 15px; 
+            margin-bottom: 25px; 
+            background: #f8faf9; 
+            padding: 22px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color); 
+            align-items: center; 
+        }
+
+        select, input, button { 
+            padding: 12px 14px; 
+            font-size: 15px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 8px; 
+            background: white; 
+            color: var(--text-main);
+        }
+
+        input[readonly] { background: #e9ecef; color: var(--text-muted); cursor: not-allowed; }
+
+        button { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: background 0.2s, transform 0.1s; 
+        }
+        button:hover { background: var(--primary-hover); }
+        button:active { transform: scale(0.98); }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .search-box {
+            width: 300px;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .loading { 
+            display: none; 
+            color: var(--accent); 
+            font-weight: 600; 
+            margin-bottom: 15px; 
+            text-align: center; 
+            background: var(--accent-light);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .table-container { 
+            max-height: 420px; 
+            overflow-y: auto; 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+        }
+
         table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { padding: 14px; text-align: left; border-bottom: 1px solid #f0f0f0; }
-        th { background: #f8f9fa; position: sticky; top: 0; z-index: 1; color: #2c3e50; }
-        tr:hover { background: #fdfdfd; }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #edf2f1; }
+        th { background: #f1f5f4; position: sticky; top: 0; z-index: 1; color: var(--primary); font-weight: 600; }
+        tr:hover { background: #f9fbfb; }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: #e2e8f0;
+            color: #475569;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🌿 Drought Parameter & AI Prediction Dashboard</h2>
+    <header>
+        <h2>🌿 Drought Monitoring & AI Dashboard</h2>
+        <div id="metricsBadge" class="metrics-badge">Loading Metrics...</div>
+    </header>
     
     <form id="droughtForm">
-        <input type="text" id="town" placeholder="Town Name" required>
-        <input type="number" id="size" placeholder="Size (sq km)" step="0.1" required>
-        <input type="number" id="duration" placeholder="Duration (Days)" required>
-        <button type="submit" id="submitBtn">Add & Predict</button>
+        <select id="townSelect" required>
+            <option value="">-- Select Town Region --</option>
+        </select>
+        <input type="number" id="size" placeholder="Size (sq km)" step="0.1" readonly required>
+        <input type="number" id="duration" placeholder="Duration (Days)" readonly required>
+        <button type="submit" id="submitBtn">Analyze & Save</button>
     </form>
     
-    <div id="loading" class="loading">⏳ Consulting Llama 3.2 model, please wait...</div>
+    <div id="loading" class="loading">⏳ Consulting Llama 3.2 model for risk assessment, please wait...</div>
 
-    <h3>Recorded Droughts & AI Insights</h3>
+    <div class="toolbar">
+        <h3 style="margin: 0; color: var(--text-main);">Recorded Telemetry & AI Insights</h3>
+        <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search records by town or keyword...">
+    </div>
+
     <div class="table-container">
         <table>
             <thead>
                 <tr>
-                    <th>Town</th>
+                    <th>Town Region</th>
                     <th>Size (sq km)</th>
                     <th>Duration (Days)</th>
-                    <th>AI Risk Assessment</th>
+                    <th>AI Risk Assessment & Prediction</th>
                 </tr>
             </thead>
             <tbody id="droughtTableBody">
@@ -54,37 +179,91 @@
 
 <script>
     const form = document.getElementById('droughtForm');
+    const townSelect = document.getElementById('townSelect');
+    const sizeInput = document.getElementById('size');
+    const durationInput = document.getElementById('duration');
     const tableBody = document.getElementById('droughtTableBody');
     const loadingDiv = document.getElementById('loading');
+    const searchInput = document.getElementById('searchInput');
+    const metricsBadge = document.getElementById('metricsBadge');
+
+    let townsData = [];
+    let allRecords = [];
+
+    async function loadTowns() {
+        try {
+            const res = await fetch('/api/towns');
+            townsData = await res.json();
+            townSelect.innerHTML = '<option value="">-- Select Town Region --</option>';
+            townsData.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.town;
+                opt.textContent = t.town;
+                townSelect.appendChild(opt);
+            });
+        } catch (err) {
+            console.error('Failed to load towns list');
+        }
+    }
+
+    townSelect.addEventListener('change', (e) => {
+        const selectedTownName = e.target.value;
+        const found = townsData.find(t => t.town === selectedTownName);
+        if (found) {
+            sizeInput.value = found.size;
+            durationInput.value = found.duration;
+        } else {
+            sizeInput.value = '';
+            durationInput.value = '';
+        }
+    });
+
+    function renderTable(dataToRender) {
+        tableBody.innerHTML = '';
+        if (dataToRender.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">No matching drought records found.</td></tr>`;
+            return;
+        }
+        dataToRender.forEach(d => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${d.town}</strong></td>
+                <td><span class="tag">${d.size} sq km</span></td>
+                <td><span class="tag">${d.duration} days</span></td>
+                <td>${d.prediction || 'Pending analysis'}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
 
     async function fetchDroughts() {
         try {
             const res = await fetch('/api/droughts');
-            const data = await res.json();
-            tableBody.innerHTML = '';
-            data.forEach(d => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><strong>${d.town}</strong></td>
-                    <td>${d.size}</td>
-                    <td>${d.duration}</td>
-                    <td>${d.prediction || 'Pending analysis'}</td>
-                `;
-                tableBody.appendChild(row);
-            });
+            allRecords = await res.json();
+            metricsBadge.textContent = `Total Zones Tracked: ${allRecords.length}`;
+            renderTable(allRecords);
         } catch (err) {
             console.error('Failed to load records');
         }
     }
+
+    searchInput.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const filtered = allRecords.filter(item => 
+            item.town.toLowerCase().includes(term) || 
+            (item.prediction && item.prediction.toLowerCase().includes(term))
+        );
+        renderTable(filtered);
+    });
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         loadingDiv.style.display = 'block';
 
         const payload = {
-            town: document.getElementById('town').value,
-            size: parseFloat(document.getElementById('size').value),
-            duration: parseInt(document.getElementById('duration').value)
+            town: townSelect.value,
+            size: parseFloat(sizeInput.value),
+            duration: parseInt(durationInput.value)
         };
 
         try {
@@ -95,6 +274,8 @@
             });
             if (!response.ok) throw new Error('Prediction failed');
             form.reset();
+            sizeInput.value = '';
+            durationInput.value = '';
             await fetchDroughts();
         } catch (err) {
             alert('Error processing AI prediction.');
@@ -103,6 +284,7 @@
         }
     });
 
+    loadTowns();
     fetchDroughts();
 </script>
 
