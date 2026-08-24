@@ -139,8 +139,4 @@ app.post('/api/droughts', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, async () => {
-    await initializeDatabase();
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+module.exports = app;
