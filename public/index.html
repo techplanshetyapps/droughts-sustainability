@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drought Monitoring & AI Prediction Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #eef2f3; color: #333; }
+        .container { max-width: 950px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
+        form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; margin-bottom: 25px; background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #e1e1e1; }
+        input, button { padding: 12px; font-size: 15px; border: 1px solid #ccc; border-radius: 6px; }
+        button { background: #27ae60; color: white; border: none; cursor: pointer; font-weight: bold; transition: background 0.2s; }
+        button:hover { background: #219653; }
+        .loading { display: none; color: #2980b9; font-weight: bold; margin-bottom: 15px; text-align: center; }
+        .table-container { max-height: 400px; overflow-y: auto; border: 1px solid #e0e0e0; border-radius: 8px; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 14px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        th { background: #f8f9fa; position: sticky; top: 0; z-index: 1; color: #2c3e50; }
+        tr:hover { background: #fdfdfd; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🌿 Drought Parameter & AI Prediction Dashboard</h2>
+    
+    <form id="droughtForm">
+        <input type="text" id="town" placeholder="Town Name" required>
+        <input type="number" id="size" placeholder="Size (sq km)" step="0.1" required>
+        <input type="number" id="duration" placeholder="Duration (Days)" required>
+        <button type="submit" id="submitBtn">Add & Predict</button>
+    </form>
+    
+    <div id="loading" class="loading">⏳ Consulting Llama 3.2 model, please wait...</div>
+
+    <h3>Recorded Droughts & AI Insights</h3>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Town</th>
+                    <th>Size (sq km)</th>
+                    <th>Duration (Days)</th>
+                    <th>AI Risk Assessment</th>
+                </tr>
+            </thead>
+            <tbody id="droughtTableBody">
+                <!-- Dynamically populated -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('droughtForm');
+    const tableBody = document.getElementById('droughtTableBody');
+    const loadingDiv = document.getElementById('loading');
+
+    async function fetchDroughts() {
+        try {
+            const res = await fetch('/api/droughts');
+            const data = await res.json();
+            tableBody.innerHTML = '';
+            data.forEach(d => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${d.town}</strong></td>
+                    <td>${d.size}</td>
+                    <td>${d.duration}</td>
+                    <td>${d.prediction || 'Pending analysis'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (err) {
+            console.error('Failed to load records');
+        }
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        loadingDiv.style.display = 'block';
+
+        const payload = {
+            town: document.getElementById('town').value,
+            size: parseFloat(document.getElementById('size').value),
+            duration: parseInt(document.getElementById('duration').value)
+        };
+
+        try {
+            const response = await fetch('/api/droughts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) throw new Error('Prediction failed');
+            form.reset();
+            await fetchDroughts();
+        } catch (err) {
+            alert('Error processing AI prediction.');
+        } finally {
+            loadingDiv.style.display = 'none';
+        }
+    });
+
+    fetchDroughts();
+</script>
+
+</body>
+</html>
