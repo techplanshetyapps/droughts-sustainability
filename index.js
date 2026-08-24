@@ -70,6 +70,8 @@ async function initializeDatabase() {
     }
 }
 
+initializeDatabase();
+
 function generateSmartPrediction(town, size, duration) {
     if (duration > 60 || size > 150) {
         return `AI Risk Analysis: Critical severity detected in ${town}. Prolonged conditions across ${size} sq km over ${duration} days threaten regional water reserves. Immediate conservation is advised.`;
