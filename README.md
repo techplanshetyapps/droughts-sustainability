@@ -24,3 +24,12 @@ droughts-sustainability/
 ├── package.json        # Project metadata and dependencies
 └── README.md           # Project documentation
 ```
+
+---
+
+## Running Locally
+
+**Install Dependencies & Start Application:**
+   ```bash
+   npm install
+   node index.js
