@@ -9,10 +9,9 @@
   <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
   <a href="https://terrapredict.vercel.app">
-    <img src="https://deploy-badge.vercel.app/?url=terrapredict.vercel.app&name=Vercel" />
+    <img src="https://img.shields.io/badge/Vercel-Deployed-black?style=for-the-badge&logo=vercel&logoColor=white" />
   </a>
 </p>
-
 </div>
 
 --- 
